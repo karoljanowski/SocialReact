@@ -1,0 +1,98 @@
+.posts {
+    & &__header {
+        text-align: left;
+        margin-bottom: 0;
+        padding: 1rem 0;
+        font-size: 1.5rem;
+        text-transform: uppercase;
+        color: $primary;
+    }
+
+    & &__content {
+        margin-bottom: 65px;
+    }
+
+    & &__list {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+.post {
+    & &__content {
+        border-radius: 12px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        background-color: rgb(35, 35, 35);
+    }
+
+    & &__image {
+        position: relative;
+        height: 300px;
+    }
+
+    & &__main-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    & &__user {
+        position: absolute;
+        overflow: hidden;
+        top: 10px;
+        left: 10px;
+        height: 50px;
+        width: 50px;
+        border-radius: 50%;
+    }
+
+    & &__user-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid $primary;
+    }
+
+    & &__bottom {}
+
+    & &__description {
+        padding: 0.5rem 1rem;
+
+        & p {
+            margin-bottom: 0;
+        }
+    }
+
+    & &__author {
+        font-weight: 700;
+    }
+
+    & &__buttons {}
+
+    & &__buttons-content {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 1rem;
+        border-top: 1px solid rgba($body-color, 0.1);
+    }
+
+    & &__button {
+        background: none;
+        border: 0;
+        outline: 0;
+        color: $body-color;
+        font-size: 1.25rem;
+    }
+
+    & &__liked {
+        color: $tertiary;
+    }
+
+
+}

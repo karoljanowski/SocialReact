@@ -1,0 +1,75 @@
+.start {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+
+    & &__bg {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        z-index: -1;
+    }
+
+    & &__switch-buttons {
+        display: flex;
+        gap: 1rem;
+        margin: 2rem 0;
+        font-size: 1.5rem;
+        color: green;
+    }
+
+    & &__switch-button {
+        color: rgba($body-color, 0.6);
+        transition: 300ms;
+
+        &::after {
+            content: "";
+            display: block;
+            margin-top: 6px;
+            width: 40px;
+            height: 3px;
+            border-radius: $border-radius;
+            background-color: $primary;
+            opacity: 0;
+            transition: 300ms;
+        }
+    }
+
+    & &__active {
+        color: $body-color;
+
+        &::after {
+            opacity: 1;
+        }
+    }
+
+
+    & &__logo {
+        flex: 1;
+        display: grid;
+        place-content: center;
+        font-weight: bold;
+        font-size: 8rem;
+        text-align: center;
+        line-height: 0.6;
+    }
+
+    & &__outlet {
+        flex: 1;
+        font-size: 1.25rem;
+    }
+
+    & .btn {
+        font-size: 1.5rem;
+    }
+
+    & input[type="text"] {
+        background-color: $body-bg;
+    }
+
+    & &__form {
+        opacity: 1;
+        transition: opacity 0.1s;
+    }
+}

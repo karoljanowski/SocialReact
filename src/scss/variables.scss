@@ -1,0 +1,18 @@
+//bootstrap variables
+$body-bg: #222222;
+$body-color: #d6d6d6;
+
+$primary: #7165E3;
+$secondary: #7FE2EF;
+$tertiary: #FB6263;
+
+$theme-colors: ("primary": $primary, "secondary": $secondary, "tertiary": $tertiary) !default;
+
+$font-family-base: 'Roboto',
+sans-serif;
+
+$link-decoration: none;
+
+$container-padding-x: 2rem;
+//other variables
+$border-radius: 14px;

@@ -1,0 +1,43 @@
+.alert {
+    position: absolute;
+    bottom: 70px;
+    height: 60px;
+    left: 1rem;
+    right: 1rem;
+    text-align: center;
+    background-color: $primary;
+    display: grid;
+    place-content: center;
+    font-weight: 700;
+
+    &__success {
+        background-color: $primary;
+    }
+
+    &__error {
+        background-color: $tertiary;
+        color: $body-bg;
+    }
+}
+
+.start .alert {
+    bottom: 10px;
+}
+
+.alert-enter {
+    opacity: 0;
+}
+
+.alert-enter-active {
+    opacity: 1;
+    transition: opacity 300ms ease-in;
+}
+
+.alert-exit {
+    opacity: 1;
+}
+
+.alert-exit-active {
+    opacity: 0;
+    transition: opacity 300ms ease-out;
+}
