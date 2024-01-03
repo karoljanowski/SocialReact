@@ -9,18 +9,18 @@ export default function Posts() {
 
     useEffect(() => {
         async function fetchPosts(){
-            const {data, error} = await supabase
-            .from('posts')
-            .select('*, profile!inner(*)')
             
+            const {data, error} = await supabase
+            .rpc('get_followed_posts', {current_profile_id: currentUser.userInfo[0].id})
+
             if(error) console.log(error)
 
             if(data){
                 setPostsData(data.map(post => {
                     return {
-                        id: post.id,
-                        author: post.profile.username,
-                        authorProfilePicture: post.profile.profile_photo,
+                        id: post.post_id,
+                        author: post.username,
+                        authorProfilePicture: post.profile_photo,
                         image: post.image,
                         description: post.description
                     }
@@ -28,8 +28,10 @@ export default function Posts() {
             } 
             
         }
-        fetchPosts()
-    }, [])
+        if(currentUser.userInfo){
+            fetchPosts()
+        }
+    }, [currentUser])
      
     const postsList = postsData ? postsData.map((item, index) => {
         return <Post key={index} data={item} />

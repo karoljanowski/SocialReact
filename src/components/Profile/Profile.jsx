@@ -30,7 +30,7 @@ export default function Profile() {
 
                 }
                 const {data, error} = await supabase
-                .rpc('getuserbyusername', {username_param: params.username})
+                .rpc('getuserbyusername', {username_param: params.username ? params.username : currentUser.userInfo[0].username})
 
                 if(data.length === 0 || error){
                     setUserData({})
@@ -54,7 +54,7 @@ export default function Profile() {
                     .from('posts')
                     .select()
                     .eq('user', userData.id)
-                    console.log(data)
+ 
                     if(!error && data){
                         setPostsData(data.map(post => {
                             return {

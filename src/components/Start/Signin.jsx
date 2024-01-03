@@ -11,8 +11,8 @@ export default function Signin() {
     const { login } = useAuth()
     const [loading, setLoading] = useState(false)
     const [user, setUser] = useState({
-        email: "",
-        password: ""
+        email: "test@test.com",
+        password: "password"
     })
     const navigate = useNavigate()
 
@@ -59,8 +59,8 @@ export default function Signin() {
         >
             {/* <Alert content={alert}/> */}
             <form className='d-flex flex-column' onSubmit={handleLogin}>
-                <input type="text" name="email" placeholder="email" onChange={handleChange}/>
-                <input type="password" name="password" placeholder="password" onChange={handleChange}/>
+                <input type="text" name="email" placeholder="email" value={user.email} onChange={handleChange}/>
+                <input type="password" name="password" placeholder="password" value={user.password} onChange={handleChange}/>
                 <input className='btn btn-primary' type="submit" value="Login" disabled={loading}/>
             </form>
         </motion.div>
