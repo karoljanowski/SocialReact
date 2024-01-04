@@ -178,7 +178,7 @@ export default function Profile() {
                             <div className="profile__stats">
                                 <div className="profile__stat">
                                 <span>Posts</span>
-                                <CountUp start={0} end={0} delay={0}>
+                                <CountUp start={0} end={postsData.length} delay={0}>
                                     {({ countUpRef }) => (
                                     <span ref={countUpRef} />
                                     )}

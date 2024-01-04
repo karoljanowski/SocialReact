@@ -22,7 +22,9 @@ export default function Posts() {
                         author: post.username,
                         authorProfilePicture: post.profile_photo,
                         image: post.image,
-                        description: post.description
+                        description: post.description,
+                        likes: post.likers ? post.likers.length : 0,
+                        likedByCurrentUser: post.likers ? post.likers.some(user => user === currentUser.userInfo[0].username) : false
                     }
                 }))
             } 
@@ -32,9 +34,54 @@ export default function Posts() {
             fetchPosts()
         }
     }, [currentUser])
-     
+    async function handleLike(post_id){
+        const postIsLiked = postsData.find(post => post.id === post_id).likedByCurrentUser === true
+
+        if(postIsLiked){
+            const {error} = await supabase
+            .from('likes')
+            .delete()
+            .eq('post_id', post_id)
+            .eq('user_id', currentUser.userInfo[0].id)
+            if(error) return
+            
+            const newPostData = postsData.map(post => {
+                if(post.id === post_id){
+                    return {
+                        ...post,
+                        likes: post.likes - 1,
+                        likedByCurrentUser: false
+                    }
+                }else{
+                    return post
+                }
+            })
+            setPostsData(newPostData)
+            
+        }else{
+            //like
+            const {error} = await supabase
+            .from('likes')
+            .insert({post_id: post_id, user_id: currentUser.userInfo[0].id})
+            if(error) return
+
+            const newPostData = postsData.map(post => {
+                    if(post.id === post_id){
+                        return {
+                            ...post,
+                            likes: post.likes + 1,
+                            likedByCurrentUser: true
+                        }
+                    }else{
+                        return post
+                    }
+            })
+            setPostsData(newPostData)
+            
+        }
+    }
     const postsList = postsData ? postsData.map((item, index) => {
-        return <Post key={index} data={item} />
+        return <Post key={index} data={item} handleLike={handleLike}/>
     }) : null
 
 

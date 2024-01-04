@@ -45,10 +45,11 @@ export default function Add() {
                 user: userInfo[0].id
             }
         )
-        if(postData && !dataError){
+        if(postData){
             console.log('dodane')
-        }else{
-            console.log('no kurwa error')
+        }
+        if(dataError){
+            console.log('error jebany')
         }
     }
     return (
