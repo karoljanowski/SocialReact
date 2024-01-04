@@ -75,8 +75,8 @@ export default function Profile() {
    
     async function handleFollow(user, currentUser){
         const data = {
-            follower_id: user, 
-            followed_id: currentUser
+            follower_id: currentUser, 
+            followed_id: user
         }
 
         if(isCurrentUserFollowingUser){
