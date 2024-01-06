@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import useDebounce from '../hooks/useDebounce'
 import { Link } from 'react-router-dom'
 import { supabase } from '../helpers/supabaseCilent'
+import { toast } from 'react-toastify'
+import Alert from './Alert'
 
 export default function SearchUser() {
     const [text, setText] = useState('')
@@ -13,7 +15,11 @@ export default function SearchUser() {
                 const {data, error} = await supabase
                 .from('profile')
                 .select()
-                .like('username', `%${deb}%`)
+                .ilike('username', `%${deb}%`)
+
+                if(error){
+                    toast.error('Unknown error')
+                }
                 
                 if(data && !error){
                     setUsers(data.map(user => {
@@ -36,6 +42,7 @@ export default function SearchUser() {
 
     return (
         <div className='search'>
+            <Alert/>
             <p className="search__header">
                 Search users
             </p>

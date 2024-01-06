@@ -1,24 +1,22 @@
-import React, { useRef } from 'react';
-import { CSSTransition } from 'react-transition-group';
+import React from 'react';
+import { ToastContainer } from 'react-toastify';
 
-const Alert = ({ content }) => {
-  const { message, isVisible, type } = content;
-  const ref = useRef(null)
+
+const Alert = () => {
 
   return (
-    <CSSTransition
-      in={isVisible}
-      timeout={300} // Duration of the animation
-      classNames="alert"
-      unmountOnExit
-      nodeRef={ref}
-    >
-      <div ref={ref} className={`alert alert__${type}`}>
-        <div className="alert__content">
-          {message}
-        </div>
-      </div>
-    </CSSTransition>
+    <ToastContainer
+      position="top-center"
+      autoClose={5000}
+      hideProgressBar
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="dark"
+    />
   );
 };
 

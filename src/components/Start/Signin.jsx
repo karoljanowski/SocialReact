@@ -2,6 +2,9 @@ import React, { useState, useEffect} from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthProvider'
 import { motion } from 'framer-motion'
+import {toast} from 'react-toastify'
+import Alert from '../Alert'
+
 const alertDefault = {
     message: "",
     isVisible: false,
@@ -19,6 +22,7 @@ export default function Signin() {
     async function handleLogin(e) {
         e.preventDefault()
         if(user.email === "" || user.password === ""){
+            toast.error('Some of fields are empty');
             return
         }
         
@@ -29,15 +33,17 @@ export default function Signin() {
                 error
               } = await login(user.email, user.password)
               if (error) {
-
+                toast.error(error.message)
               }
               if (data.user && data.session){
-                  navigate("/posts")
+                toast.success('Success!')
+                setTimeout(() => {
+                    navigate("/posts")
+                }, 1500)
               } 
 
         }catch(error){
-            console.log(error)
-
+            toast.error('Unknown error')
         }
         setLoading(false)
     }
@@ -57,7 +63,7 @@ export default function Signin() {
             duration: 0.8
         }}
         >
-            {/* <Alert content={alert}/> */}
+            <Alert/>
             <form className='d-flex flex-column' onSubmit={handleLogin}>
                 <input type="text" name="email" placeholder="email" value={user.email} onChange={handleChange}/>
                 <input type="password" name="password" placeholder="password" value={user.password} onChange={handleChange}/>

@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react'
 import { useAuth } from '../context/AuthProvider'
 import { supabase } from '../helpers/supabaseCilent'
 import { v4 as uuidv4 } from 'uuid';
+import {toast} from 'react-toastify'
+import Alert from './Alert';
 
 export default function Add() {
     const [post, setPost] = useState({    
@@ -34,9 +36,10 @@ export default function Add() {
         .upload(`${userInfo[0].id}/${uuidv4()}`, post.file)
 
         if(!imageData || imageError){
+            toast.error('Image field is empty')
             return
         }
-        const {data: postData, error: dataError} = await supabase
+        const {error: postError} = await supabase
         .from('posts')
         .insert(
             {
@@ -45,15 +48,16 @@ export default function Add() {
                 user: userInfo[0].id
             }
         )
-        if(postData){
-            console.log('dodane')
+        if(!postError){
+            toast.success('Your post has been added')
+        }else{
+            toast.error('Unknown error');
         }
-        if(dataError){
-            console.log('error jebany')
-        }
+        
     }
     return (
         <div className='add'>
+            <Alert/>
             <p className='add__header'>Add post</p>
 
             <form className='add__form' onSubmit={handleSubmit}>

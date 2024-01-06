@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom'
 import CountUp from 'react-countup';
 import { v4 as uuidv4 } from 'uuid';
 import ProfilePosts from './ProfilePosts'
+import { toast } from 'react-toastify'
+import Alert from '../Alert'
 
 export default function Profile() {
     const [loading, setLoading] = useState(true)
@@ -83,14 +85,15 @@ export default function Profile() {
             const {error} = await supabase
             .from('follows')
             .delete()
-            .eq('follower_id', user)
-            .eq('followed_id', currentUser)
+            .eq('follower_id', currentUser)
+            .eq('followed_id', user)
             
 
             if(!error){
                 setIsCurrentUserFollowingUser(false)
+            }else{
+                toast.error('Unknown error')
             }
-            console.log(error)
         }else{
             const {error} = await supabase
             .from('follows')
@@ -98,8 +101,9 @@ export default function Profile() {
 
             if(!error){
                 setIsCurrentUserFollowingUser(true)
+            }else{
+                toast.error('Unknown error')
             }
-            console.log(error)
         }
     }
     async function handleChangeProfilePicture(e){
@@ -109,6 +113,7 @@ export default function Profile() {
         .from('PostPhotos')
         .upload(`${userData.id}/${uuidv4()}`, e.target.files[0])
         if(!imageData || imageError){
+            toast.error("You did't select a photo")
             return
         }
         const { error } = await supabase
@@ -116,6 +121,7 @@ export default function Profile() {
             .update({ profile_photo: `https://zjmwpddflnufpytvgmij.supabase.co/storage/v1/object/public/${imageData.fullPath}` })
             .eq('id', userData.id)
         if(!error){
+            toast.success('Success!')
             setUserData(prev => {
                 return{
                     ...prev,
@@ -123,7 +129,7 @@ export default function Profile() {
                 }
               })
         }else{
-            console.log(error)
+            toast.error('Unknown error')
         }
     }
     function handleChangeDescription(e){
@@ -155,6 +161,7 @@ export default function Profile() {
     if(loading) return <p>loading...</p>
     return (
         <div className='profile'>
+            <Alert/>
             <div className="profile__header">
                 <p className="profile__header-text">profile</p>
                 {isCurrentUser && <button className='profile__logout' onClick={currentUser.signOut}><FontAwesomeIcon icon="fa-right-from-bracket" /> logout</button>}

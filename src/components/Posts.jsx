@@ -2,6 +2,8 @@ import React, {useState, useEffect} from 'react'
 import Post from './Post'
 import { useAuth } from '../context/AuthProvider';
 import { supabase } from '../helpers/supabaseCilent';
+import { toast } from 'react-toastify';
+import Alert from './Alert';
 
 export default function Posts() {
     const [postsData, setPostsData] = useState(null)
@@ -43,7 +45,7 @@ export default function Posts() {
             .delete()
             .eq('post_id', post_id)
             .eq('user_id', currentUser.userInfo[0].id)
-            if(error) return
+            if(error) toast.error('Unknown error')
             
             const newPostData = postsData.map(post => {
                 if(post.id === post_id){
@@ -63,7 +65,7 @@ export default function Posts() {
             const {error} = await supabase
             .from('likes')
             .insert({post_id: post_id, user_id: currentUser.userInfo[0].id})
-            if(error) return
+            if(error) toast.error('Unknown error')
 
             const newPostData = postsData.map(post => {
                     if(post.id === post_id){
@@ -87,6 +89,7 @@ export default function Posts() {
 
     return (
         <div className='posts'>
+            <Alert/>
             <p className="posts__header">feed</p>
             <div className="posts__content">
                 <div className="posts__list">
