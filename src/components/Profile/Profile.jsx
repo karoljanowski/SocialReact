@@ -6,12 +6,15 @@ import { supabase } from '../../helpers/supabaseCilent'
 import { Link } from 'react-router-dom'
 import CountUp from 'react-countup';
 import { v4 as uuidv4 } from 'uuid';
-import ProfilePosts from './ProfilePosts'
-import { toast } from 'react-toastify'
-import Alert from '../Alert'
+import ProfilePosts from './ProfilePosts';
+import { toast } from 'react-toastify';
+import Alert from '../Alert';
+import Skeleton from 'react-loading-skeleton'
 
 export default function Profile() {
     const [loading, setLoading] = useState(true)
+    const [loadingEditProfilePicture, setLoadingEditProfilePicture] = useState(false)
+    const [loadingEditDescription, setLoadingEditDescription] = useState(false)
     const currentUser = useAuth()
     const params = useParams()
     const [isCurrentUser, setIsCurrentUser] = useState(false)
@@ -66,7 +69,7 @@ export default function Profile() {
                         }))
                     }
                 }
-                setLoading(false)
+                setLoading(false) // false
                 setUserData(userData)
             }
         }
@@ -108,6 +111,7 @@ export default function Profile() {
     }
     async function handleChangeProfilePicture(e){
         e.preventDefault()
+        setLoadingEditProfilePicture(true)
         const {data: imageData, error: imageError} = await supabase
         .storage
         .from('PostPhotos')
@@ -131,6 +135,7 @@ export default function Profile() {
         }else{
             toast.error('Unknown error')
         }
+        setLoadingEditProfilePicture(false)
     }
     function handleChangeDescription(e){
 		setDescriptionValue(e.target.value)
@@ -141,7 +146,7 @@ export default function Profile() {
 		setIsEditingDescription(true)
 	}
     async function handleAcceptDescription(){
-
+        setLoadingEditDescription(true)
         const { error } = await supabase
             .from('profile')
             .update({ description: descriptionValue })
@@ -156,9 +161,11 @@ export default function Profile() {
         }else{
             console.log(error)
         }
+        setLoadingEditDescription(false)
         setIsEditingDescription(false)
     }
-    if(loading) return <p>loading...</p>
+    console.log(loadingEditDescription)
+    if(!loading && Object.keys(userData).length === 0) return noUser();
     return (
         <div className='profile'>
             <Alert/>
@@ -166,76 +173,88 @@ export default function Profile() {
                 <p className="profile__header-text">profile</p>
                 {isCurrentUser && <button className='profile__logout' onClick={currentUser.signOut}><FontAwesomeIcon icon="fa-right-from-bracket" /> logout</button>}
             </div>
-            {
-                Object.keys(userData).length !== 0 ?
-                <>
-                    <div className="profile__top">
-                        <div className="profile__picture">
-                            {isCurrentUser ? <>
-                            <label htmlFor="file" className='profile__file-label'>
-                            <FontAwesomeIcon className='profile__picture-edit' icon={'fa-pen-to-square'}></FontAwesomeIcon>
-                                <img src={userData.profilePicture} />
-                            </label>
-                            <input type="file" id='file' accept="image/*" name='file' className='profile__file' onChange={handleChangeProfilePicture}/>
-                            </> : 
-                            <img src={userData.profilePicture} alt="" />}
+
+            <div className="profile__top">
+                <div className="profile__picture">
+                    {loading || loadingEditProfilePicture ? <Skeleton
+                        circle
+                        height="100%"
+                    />
+                    :
+                    isCurrentUser ? 
+                    <>
+                    <label htmlFor="file" className='profile__file-label'>
+                    <FontAwesomeIcon className='profile__picture-edit' icon={'fa-pen-to-square'}></FontAwesomeIcon>
+                        <img src={userData.profilePicture} />
+                    </label>
+                    <input type="file" id='file' accept="image/*" name='file' className='profile__file' onChange={handleChangeProfilePicture}/>
+                    </> : 
+                    <img src={userData.profilePicture} alt="" />}
+                </div>
+                <div className="profile__info">
+                    <p className='profile__username'>{loading ? <Skeleton width="100%"/> : userData.username}</p>
+                    <div className="profile__stats">
+                        <div className="profile__stat">
+                        <span>Posts</span>
+                        {loading ? <Skeleton/> :
+                        <CountUp start={0} end={postsData.length} delay={0}>
+                            {({ countUpRef }) => (
+                            <span ref={countUpRef} />
+                            )}
+                        </CountUp>}
                         </div>
-                        <div className="profile__info">
-                            <p className='profile__username'>{userData.username}</p>
-                            <div className="profile__stats">
-                                <div className="profile__stat">
-                                <span>Posts</span>
-                                <CountUp start={0} end={postsData.length} delay={0}>
-                                    {({ countUpRef }) => (
-                                    <span ref={countUpRef} />
-                                    )}
-                                </CountUp>
-                                </div>
-                                <div className="profile__stat">
-                                <span>Followers</span>
-                                <CountUp start={0} end={userData.followers && userData.followers.length} delay={0}>
-                                {({ countUpRef }) => (
-                                    <span ref={countUpRef} />
-                                )}
-                                </CountUp>
-                                </div>
-                                <div className="profile__stat">
-                                <span>Following</span>
-                                <CountUp start={0} end={userData.following && userData.following.length} delay={0}>
-                                {({ countUpRef }) => (
-                                    <span ref={countUpRef} />
-                                )}
-                                </CountUp>
-                                </div>
-                            </div>
+                        <div className="profile__stat">
+                        <span>Followers</span>
+                        {loading ? <Skeleton/> :
+                        <CountUp start={0} end={userData.followers && userData.followers.length} delay={0}>
+                        {({ countUpRef }) => (
+                            <span ref={countUpRef} />
+                        )}
+                        </CountUp>}
+                        </div>
+                        <div className="profile__stat">
+                        <span>Following</span>
+                        {loading ? <Skeleton/> : 
+                        <CountUp start={0} end={userData.following && userData.following.length} delay={0}>
+                        {({ countUpRef }) => (
+                            <span ref={countUpRef} />
+                        )}
+                        </CountUp>}
                         </div>
                     </div>
-                    <div className="profile__description">
-                        {isEditingDescription ? 
-                            <>
-                                <input autoFocus className="profile__description-edit" type='text' value={descriptionValue} onChange={handleChangeDescription}></input>
-                                <FontAwesomeIcon onClick={handleAcceptDescription} className='profile__description-icon-edit' icon={'fa-check'}></FontAwesomeIcon>
-                            </> :
-                            <>
-                            {userData.description}
-                            {isCurrentUser && <FontAwesomeIcon onClick={handleEditDescription} className='profile__description-icon-edit' icon="fa-pen-to-square"></FontAwesomeIcon>}
-                            </>
-			            }
-                    </div>
-                    {!isCurrentUser && <button className={`btn btn-primary ${isCurrentUserFollowingUser ? 'btn-unfollow' : 'btn-follow'}`} onClick={() => handleFollow(userData.id, currentUser.userInfo[0].id)}>{isCurrentUserFollowingUser ? 'Unfollow' : 'Follow'}</button>}
-                    <ProfilePosts posts={postsData}/>
-                </>
-                :
-                noUser()
-            }
+                </div>
+            </div>
+            <div className="profile__description">
+                {loading || loadingEditDescription ? <Skeleton width="100%"/> :
+                isEditingDescription ? 
+                    <>
+                        <input autoFocus className="profile__description-edit" type='text' value={descriptionValue} onChange={handleChangeDescription}></input>
+                        <FontAwesomeIcon onClick={handleAcceptDescription} className='profile__description-icon-edit' icon={'fa-check'}></FontAwesomeIcon>
+                    </> :
+                    <>
+                    {userData.description}
+                    {isCurrentUser && <FontAwesomeIcon onClick={handleEditDescription} className='profile__description-icon-edit' icon="fa-pen-to-square"></FontAwesomeIcon>}
+                    </>
+                }
+            </div>
+            {loading ? <Skeleton width="100&" className='btn-follow-skeleton'/>:
+            !isCurrentUser && 
+            <button className={`btn btn-primary ${isCurrentUserFollowingUser ? 'btn-unfollow' : 'btn-follow'}`} onClick={() => handleFollow(userData.id, currentUser.userInfo[0].id)}>
+                {isCurrentUserFollowingUser ? 'Unfollow' : 'Follow'}
+            </button>}
+            <ProfilePosts posts={postsData} loading={loading}/>
+
+            
         </div>
     )
 }
 function noUser(){
     return (
-      <div className='profile__no-user'>
-        <p>user doesn't exist</p>
-        <Link className='btn btn-primary' to={'/search'}>Search users</Link>
-      </div>
+        <div className="profile">
+            <div className='profile__no-user'>
+                <p>user doesn't exist</p>
+                <Link className='btn btn-primary' to={'/search'}>Search users</Link>
+            </div>
+        </div>
     )
   }

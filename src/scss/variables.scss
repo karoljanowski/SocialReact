@@ -16,3 +16,8 @@ $link-decoration: none;
 $container-padding-x: 2rem;
 //other variables
 $border-radius: 14px;
+
+.react-loading-skeleton {
+    --base-color: #2d2d2d;
+    --highlight-color: #4b4b4b;
+}

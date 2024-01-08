@@ -4,8 +4,10 @@ import { supabase } from '../helpers/supabaseCilent'
 import { v4 as uuidv4 } from 'uuid';
 import {toast} from 'react-toastify'
 import Alert from './Alert';
+import ReactLoading from 'react-loading';
 
 export default function Add() {
+    const [loading, setLoading] = useState(false)
     const [post, setPost] = useState({    
         file: null,
         description: ""
@@ -29,6 +31,7 @@ export default function Add() {
     };
 
     async function handleSubmit(e){
+        setLoading(true)
         e.preventDefault()
         const {data: imageData, error: imageError} = await supabase
         .storage
@@ -53,7 +56,7 @@ export default function Add() {
         }else{
             toast.error('Unknown error');
         }
-        
+        setLoading(false)
     }
     return (
         <div className='add'>
@@ -64,7 +67,11 @@ export default function Add() {
                 <label htmlFor="file" className='add__file-label'>{post.file ? <img src={URL.createObjectURL(post.file)}/> : <span>Choose image</span>}</label>
                 <input type="file" id='file' accept="image/*" name='file' className='add__file' onChange={handleChange}/>
                 <input type="text" id='description' name='description' onChange={handleChange} value={post.description} placeholder='Add your description'/>
-                <input className='btn btn-primary' type="submit" value='Add Post'/>
+                <button className='btn btn-primary' type="submit" disabled={loading}>
+                    {loading ? <ReactLoading type={'bars'} color={'var(--bs-body-color)'} height={'25px'} width={'30px'}/>
+                    :
+                    "Add Post"}
+                </button>
             </form>
         </div>
     )

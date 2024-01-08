@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react'
 import Post from './Post'
-import { useAuth } from '../context/AuthProvider';
-import { supabase } from '../helpers/supabaseCilent';
+import { useAuth } from '../../context/AuthProvider';
+import { supabase } from '../../helpers/supabaseCilent';
 import { toast } from 'react-toastify';
-import Alert from './Alert';
+import Alert from '../Alert';
 
 export default function Posts() {
     const [postsData, setPostsData] = useState(null)

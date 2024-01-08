@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useAuth } from '../context/AuthProvider'
+import { useAuth } from '../../context/AuthProvider'
 
 export default function Post(props) {
     const {id, author, authorProfilePicture, image, description, likes, likedByCurrentUser} = props.data

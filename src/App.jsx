@@ -4,15 +4,15 @@ import AuthRoute from './components/AuthRoute';
 import Start from './components/Start/Start';
 import Signin from './components/Start/Signin';
 import Signup from './components/Start/Signup';
-import Posts from './components/Posts';
+import Posts from './components/Post/Posts';
 import Add from './components/Add';
 import SearchUser from './components/SearchUser';
 import Profile from './components/Profile/Profile';
 import './scss/main.scss'
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faMagnifyingGlass, faUser,  faHouse, faRocket, faHeart, faMessage, faSquarePlus, faRightFromBracket, faPenToSquare, faCheck} from '@fortawesome/free-solid-svg-icons'
-library.add(faMagnifyingGlass, faUser, faHouse, faRocket, faHeart, faMessage, faSquarePlus, faRightFromBracket, faPenToSquare, faCheck)
+import { faMagnifyingGlass, faUser,  faHouse, faRocket, faHeart, faMessage, faSquarePlus, faRightFromBracket, faPenToSquare, faCheck, faImage} from '@fortawesome/free-solid-svg-icons'
+library.add(faMagnifyingGlass, faUser, faHouse, faRocket, faHeart, faMessage, faSquarePlus, faRightFromBracket, faPenToSquare, faCheck, faImage)
 
 function App() {
     return (

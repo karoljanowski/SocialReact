@@ -4,14 +4,17 @@ import { Link } from 'react-router-dom'
 import { supabase } from '../helpers/supabaseCilent'
 import { toast } from 'react-toastify'
 import Alert from './Alert'
+import Skeleton from 'react-loading-skeleton'
 
 export default function SearchUser() {
     const [text, setText] = useState('')
     const deb = useDebounce(text, 500)
     const [users, setUsers] = useState([])
+    const [loading, setLoading] = useState(false)
     useEffect(() => {
         async function fetchUsers(){
             if(deb.length > 0){
+                setLoading(true)
                 const {data, error} = await supabase
                 .from('profile')
                 .select()
@@ -30,6 +33,7 @@ export default function SearchUser() {
                         }
                     }))
                 }
+                setLoading(false)
             }
         }
         fetchUsers()
@@ -49,7 +53,8 @@ export default function SearchUser() {
             <input className='search__input' type="text" value={text} onChange={e => setText(e.target.value)} autoFocus />
 
             <div className='search__users'>
-                {users.length > 0 ? (
+                {loading ? <UserSkeleton /> :
+                users.length > 0 ? (
                     userList
                 ) : (
                     deb.length > 1 && <p className='search__error'>No users found that contain "{deb}"</p>
@@ -69,6 +74,24 @@ function UserItem({user}){
                 </div>
                 <div className="search__username">
                     {user.username}
+                </div>
+            </div>
+        </Link>
+    )
+}
+function UserSkeleton(){
+    return (
+        <Link>
+            <div className="search__user">
+                <div className="search__img">
+                    <Skeleton
+                    circle
+                    height={64}
+                    width={64}
+                    style={{display: 'block'}}/>
+                </div>
+                <div className="search__username">
+                    <Skeleton width={200}/>
                 </div>
             </div>
         </Link>

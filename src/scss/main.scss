@@ -2,6 +2,7 @@
 @import 'variables.scss';
 @import 'bootstrap';
 @import 'react-toastify/dist/ReactToastify.css';
+@import 'react-loading-skeleton/dist/skeleton.css';
 
 @import 'common';
 
@@ -10,7 +11,6 @@
 
 @import 'components/start';
 @import 'components/profile';
-@import 'components/dashboard.scss';
 @import 'components/menu.scss';
 @import 'components/posts.scss';
 @import 'components/add.scss';

@@ -34,4 +34,9 @@
             border-radius: 14px;
         }
     }
+
+    & .btn {
+        display: grid;
+        place-content: center;
+    }
 }
