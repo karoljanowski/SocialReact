@@ -3,11 +3,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useAuth } from '../../context/AuthProvider'
 import Skeleton from 'react-loading-skeleton'
 
-export default function Post({data, loading}) {
-
-    const currentUser = useAuth()
+export default function Post({data, loading, handleLike}) {
     function handleLikeClick(){
-        props.handleLike(id)
+        if(handleLike){
+            handleLike(data.id)
+        }
     }
 
     return (
