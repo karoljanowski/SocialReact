@@ -60,6 +60,7 @@ export default function Profile() {
                     .from('posts')
                     .select()
                     .eq('user', userData.id)
+                    .order('created_at', { ascending: false })
  
                     if(!error && data){
                         setPostsData(data.map(post => {
