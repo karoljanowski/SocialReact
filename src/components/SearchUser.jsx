@@ -5,6 +5,7 @@ import { supabase } from '../helpers/supabaseCilent'
 import { toast } from 'react-toastify'
 import Alert from './Alert'
 import Skeleton from 'react-loading-skeleton'
+import { motion } from 'framer-motion'
 
 export default function SearchUser() {
     const [text, setText] = useState('')
@@ -45,7 +46,14 @@ export default function SearchUser() {
     }) : null
 
     return (
-        <div className='search'>
+        <motion.div 
+        className='search'
+        initial={{opacity: 0}}
+        animate={{opacity: 1}}
+        exit={{opacity: 0}}
+        transition={{
+            duration: 0.2
+        }}>
             <Alert/>
             <p className="search__header">
                 Search users
@@ -61,7 +69,7 @@ export default function SearchUser() {
                 )}
             </div>
             
-        </div>
+        </motion.div>
     )
     
 }

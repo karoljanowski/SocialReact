@@ -4,14 +4,17 @@ import { useAuth } from '../../context/AuthProvider';
 import { supabase } from '../../helpers/supabaseCilent';
 import { toast } from 'react-toastify';
 import Alert from '../Alert';
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 export default function Posts() {
-    const [postsData, setPostsData] = useState(null)
+    const [postsData, setPostsData] = useState([])
     const currentUser = useAuth()
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         async function fetchPosts(){
-            
+            setLoading(true)
             const {data, error} = await supabase
             .rpc('get_followed_posts', {current_profile_id: currentUser.userInfo[0].id})
 
@@ -31,11 +34,13 @@ export default function Posts() {
                 }))
             } 
             
+            setLoading(false)
         }
         if(currentUser.userInfo){
             fetchPosts()
         }
     }, [currentUser])
+
     async function handleLike(post_id){
         const postIsLiked = postsData.find(post => post.id === post_id).likedByCurrentUser === true
 
@@ -86,15 +91,33 @@ export default function Posts() {
         return <Post key={index} data={item} handleLike={handleLike}/>
     }) : null
 
-
+    if(!loading && postsData.length === 0) return NoPosts();
     return (
-        <div className='posts'>
+        <motion.div 
+        className='posts'
+        initial={{opacity: 0}}
+        animate={{opacity: 1}}
+        exit={{opacity: 0}}
+        transition={{
+            duration: 0.2
+        }}>
             <Alert/>
             <p className="posts__header">feed</p>
             <div className="posts__content">
                 <div className="posts__list">
-                    {postsList}
+                    {!loading ? postsList : <Post loading={loading} data={{}} />}
                 </div>
+            </div>
+        </motion.div>
+    )
+}
+function NoPosts(){
+    return(
+        <div className="posts">
+            <p className="posts__header">feed</p>
+            <div className='posts__no-posts'>
+                <p>no posts</p>
+                <Link className='btn btn-primary' to='/search'>Follow someone</Link>
             </div>
         </div>
     )

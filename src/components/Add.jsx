@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import {toast} from 'react-toastify'
 import Alert from './Alert';
 import ReactLoading from 'react-loading';
+import { motion } from 'framer-motion';
 
 export default function Add() {
     const [loading, setLoading] = useState(false)
@@ -59,7 +60,14 @@ export default function Add() {
         setLoading(false)
     }
     return (
-        <div className='add'>
+        <motion.div 
+        className='add'
+        initial={{opacity: 0}}
+        animate={{opacity: 1}}
+        exit={{opacity: 0}}
+        transition={{
+            duration: 0.2
+        }}>
             <Alert/>
             <p className='add__header'>Add post</p>
 
@@ -73,6 +81,6 @@ export default function Add() {
                     "Add Post"}
                 </button>
             </form>
-        </div>
+        </motion.div>
     )
 }

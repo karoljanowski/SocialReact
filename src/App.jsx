@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React from 'react'
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import AuthRoute from './components/AuthRoute';
 import Start from './components/Start/Start';
 import Signin from './components/Start/Signin';
@@ -9,34 +9,36 @@ import Add from './components/Add';
 import SearchUser from './components/SearchUser';
 import Profile from './components/Profile/Profile';
 import './scss/main.scss'
+import { AnimatePresence } from 'framer-motion';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faMagnifyingGlass, faUser,  faHouse, faRocket, faHeart, faMessage, faSquarePlus, faRightFromBracket, faPenToSquare, faCheck, faImage} from '@fortawesome/free-solid-svg-icons'
 library.add(faMagnifyingGlass, faUser, faHouse, faRocket, faHeart, faMessage, faSquarePlus, faRightFromBracket, faPenToSquare, faCheck, faImage)
 
 function App() {
+    const location = useLocation()
     return (
         <div className="container">
-            <Router>
-                <Routes>
-                    <Route
-                        element={<AuthRoute />}
-                    >
-                    <Route index element={<Navigate to="posts" replace />} />
-                    <Route path="posts" element={<Posts />} />
-                    <Route path="search" element={<SearchUser/>} />
-                    <Route path="profile/" element={<Profile />} />
-                    <Route path="profile/:username" element={<Profile />} />
-                    <Route path="add" element={<Add/>} />
-                    </Route> 
-                    <Route
-                    path='/start'
-                    element={<Start/>}>
-                        <Route path="signin" element={<Signin />} />
-                        <Route path="signup" element={<Signup />} />
-                    </Route>
-                </Routes>
-            </Router>
+            <AnimatePresence mode="wait">
+                    <Routes location={location} key={location.pathname}>
+                        <Route
+                            element={<AuthRoute />}
+                        >
+                        <Route index element={<Navigate to="posts" replace />} />
+                        <Route path="posts" element={<Posts />} />
+                        <Route path="search" element={<SearchUser/>} />
+                        <Route path="profile/" element={<Profile />} />
+                        <Route path="profile/:username" element={<Profile />} />
+                        <Route path="add" element={<Add/>} />
+                        </Route> 
+                        <Route
+                        path='/start'
+                        element={<Start/>}>
+                            <Route path="signin" element={<Signin />} />
+                            <Route path="signup" element={<Signup />} />
+                        </Route>
+                    </Routes>
+            </AnimatePresence>
             
         </div>
     )

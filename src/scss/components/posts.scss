@@ -17,6 +17,18 @@
         grid-template-columns: 1fr;
         gap: 1rem;
     }
+
+    & &__no-posts {
+        height: 50vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        & p {
+            font-size: 2rem;
+        }
+    }
 }
 
 .post {
@@ -88,11 +100,15 @@
         outline: 0;
         color: $body-color;
         font-size: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
     }
 
     & &__liked {
         color: $tertiary;
     }
+
 
 
 }

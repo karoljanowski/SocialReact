@@ -10,6 +10,7 @@ import ProfilePosts from './ProfilePosts';
 import { toast } from 'react-toastify';
 import Alert from '../Alert';
 import Skeleton from 'react-loading-skeleton'
+import { motion } from 'framer-motion'
 
 export default function Profile() {
     const [loading, setLoading] = useState(true)
@@ -167,7 +168,14 @@ export default function Profile() {
     console.log(loadingEditDescription)
     if(!loading && Object.keys(userData).length === 0) return noUser();
     return (
-        <div className='profile'>
+        <motion.div
+        className='profile'
+        initial={{opacity: 0}}
+        animate={{opacity: 1}}
+        exit={{opacity: 0}}
+        transition={{
+            duration: 0.2
+        }}>
             <Alert/>
             <div className="profile__header">
                 <p className="profile__header-text">profile</p>
@@ -243,14 +251,15 @@ export default function Profile() {
                 {isCurrentUserFollowingUser ? 'Unfollow' : 'Follow'}
             </button>}
             <ProfilePosts posts={postsData} loading={loading}/>
-
-            
-        </div>
+        </motion.div>
     )
 }
 function noUser(){
     return (
         <div className="profile">
+            <div className="profile__header">
+                <p className="profile__header-text">profile</p>
+            </div>
             <div className='profile__no-user'>
                 <p>user doesn't exist</p>
                 <Link className='btn btn-primary' to={'/search'}>Search users</Link>

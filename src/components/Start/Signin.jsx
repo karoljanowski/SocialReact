@@ -54,13 +54,14 @@ export default function Signin() {
         }))
     }
     return (
-        <motion.div 
+        <motion.div
+        
         className='start__form'
-        initial={{opacity: 0}}
-        animate={{opacity: 1}}
         exit={{opacity: 0}}
+        animate={{opacity: 1}}
+        initial={{opacity: 0}}
         transition={{
-            duration: 0.8
+            duration: 0.2
         }}
         >
             <Alert/>
