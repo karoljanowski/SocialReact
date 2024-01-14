@@ -5,12 +5,13 @@ import { supabase } from '../../helpers/supabaseCilent';
 import { toast } from 'react-toastify';
 import Alert from '../Alert';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 export default function Posts() {
     const [postsData, setPostsData] = useState([])
     const currentUser = useAuth()
     const [loading, setLoading] = useState(true)
+    const location = useLocation()
 
     useEffect(() => {
         async function fetchPosts(){
@@ -41,54 +42,8 @@ export default function Posts() {
         }
     }, [currentUser])
 
-    async function handleLike(post_id){
-        const postIsLiked = postsData.find(post => post.id === post_id).likedByCurrentUser === true
-
-        if(postIsLiked){
-            const {error} = await supabase
-            .from('likes')
-            .delete()
-            .eq('post_id', post_id)
-            .eq('user_id', currentUser.userInfo[0].id)
-            if(error) toast.error('Unknown error')
-            
-            const newPostData = postsData.map(post => {
-                if(post.id === post_id){
-                    return {
-                        ...post,
-                        likes: post.likes - 1,
-                        likedByCurrentUser: false
-                    }
-                }else{
-                    return post
-                }
-            })
-            setPostsData(newPostData)
-            
-        }else{
-            //like
-            const {error} = await supabase
-            .from('likes')
-            .insert({post_id: post_id, user_id: currentUser.userInfo[0].id})
-            if(error) toast.error('Unknown error')
-
-            const newPostData = postsData.map(post => {
-                    if(post.id === post_id){
-                        return {
-                            ...post,
-                            likes: post.likes + 1,
-                            likedByCurrentUser: true
-                        }
-                    }else{
-                        return post
-                    }
-            })
-            setPostsData(newPostData)
-            
-        }
-    }
     const postsList = postsData ? postsData.map((item, index) => {
-        return <Post key={index} data={item} handleLike={handleLike}/>
+        return <Post key={index} data={item} list={true}/>
     }) : null
 
     if(!loading && postsData.length === 0) return NoPosts();

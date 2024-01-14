@@ -6,6 +6,7 @@ import {toast} from 'react-toastify'
 import Alert from './Alert';
 import ReactLoading from 'react-loading';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 export default function Add() {
     const [loading, setLoading] = useState(false)
@@ -14,6 +15,7 @@ export default function Add() {
         description: ""
     })
     const {userInfo} = useAuth()
+    const navigate = useNavigate()
 
     const handleChange = (event) => {
         const { name, type, value, files } = event.target;
@@ -41,9 +43,10 @@ export default function Add() {
 
         if(!imageData || imageError){
             toast.error('Image field is empty')
+            setLoading(false)
             return
         }
-        const {error: postError} = await supabase
+        const {data, error: postError} = await supabase
         .from('posts')
         .insert(
             {
@@ -54,6 +57,9 @@ export default function Add() {
         )
         if(!postError){
             toast.success('Your post has been added')
+            setTimeout(() => {
+                navigate('/profile')
+            }, 1000)
         }else{
             toast.error('Unknown error');
         }

@@ -5,6 +5,7 @@ import Start from './components/Start/Start';
 import Signin from './components/Start/Signin';
 import Signup from './components/Start/Signup';
 import Posts from './components/Post/Posts';
+import Post from './components/Post/Post';
 import Add from './components/Add';
 import SearchUser from './components/SearchUser';
 import Profile from './components/Profile/Profile';
@@ -12,8 +13,8 @@ import './scss/main.scss'
 import { AnimatePresence } from 'framer-motion';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faMagnifyingGlass, faUser,  faHouse, faRocket, faHeart, faMessage, faSquarePlus, faRightFromBracket, faPenToSquare, faCheck, faImage} from '@fortawesome/free-solid-svg-icons'
-library.add(faMagnifyingGlass, faUser, faHouse, faRocket, faHeart, faMessage, faSquarePlus, faRightFromBracket, faPenToSquare, faCheck, faImage)
+import { faMagnifyingGlass, faUser,  faHouse, faRocket, faHeart, faMessage, faSquarePlus, faRightFromBracket, faPenToSquare, faCheck, faImage, faTrash} from '@fortawesome/free-solid-svg-icons'
+library.add(faMagnifyingGlass, faUser, faHouse, faRocket, faHeart, faMessage, faSquarePlus, faRightFromBracket, faPenToSquare, faCheck, faImage, faTrash)
 
 function App() {
     const location = useLocation()
@@ -26,8 +27,9 @@ function App() {
                         >
                         <Route index element={<Navigate to="posts" replace />} />
                         <Route path="posts" element={<Posts />} />
+                        <Route path="posts/:id" element={<Post list={false} />} />
                         <Route path="search" element={<SearchUser/>} />
-                        <Route path="profile/" element={<Profile />} />
+                        <Route path="profile" element={<Profile />} />
                         <Route path="profile/:username" element={<Profile />} />
                         <Route path="add" element={<Add/>} />
                         </Route> 

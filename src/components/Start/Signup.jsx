@@ -71,7 +71,7 @@ export default function Signup() {
                 <input type="text" name="email" placeholder="email" onChange={handleChange} value={user.email}/>
                 <input type="text" name="username" placeholder="username" onChange={handleChange} value={user.username}/>
                 <input type="password" name="password" placeholder="password" onChange={handleChange} value={user.password}/>
-                <input className="btn btn-primary" type="submit" value="Login" disabled={loading}/>
+                <input className="btn btn-primary" type="submit" value="Sign up" disabled={loading}/>
             </form>
         </motion.div>
     )

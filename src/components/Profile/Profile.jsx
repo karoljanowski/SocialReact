@@ -166,7 +166,6 @@ export default function Profile() {
         setLoadingEditDescription(false)
         setIsEditingDescription(false)
     }
-    console.log(loadingEditDescription)
     if(!loading && Object.keys(userData).length === 0) return noUser();
     return (
         <motion.div

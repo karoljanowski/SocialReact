@@ -1,6 +1,7 @@
 import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Link } from 'react-router-dom'
 
 export default function ProfilePosts({posts, loading}) {
     const postList = posts && posts.map(item => {
@@ -32,10 +33,10 @@ function PostSkeleton(){
     )
 }
 function ProfilePost({data}){
-    const {image} = data
+    const {id, image} = data
     return (
-        <div className="profile__post">
+        <Link to={`/posts/${id}`} className="profile__post">
             <img src={image}/>
-        </div>
+        </Link>
     )
 }

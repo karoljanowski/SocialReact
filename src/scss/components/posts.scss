@@ -109,6 +109,25 @@
         color: $tertiary;
     }
 
+    & &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    & &__delete {
+        color: $tertiary;
+        font-size: 1.125rem;
+    }
+
+    & &__header-text {
+        text-align: left;
+        margin-bottom: 0;
+        padding: 1rem 0;
+        font-size: 1.5rem;
+        text-transform: uppercase;
+        color: $primary;
+    }
 
 
 }

@@ -68,7 +68,7 @@ export default function Signin() {
             <form className='d-flex flex-column' onSubmit={handleLogin}>
                 <input type="text" name="email" placeholder="email" value={user.email} onChange={handleChange}/>
                 <input type="password" name="password" placeholder="password" value={user.password} onChange={handleChange}/>
-                <input className='btn btn-primary' type="submit" value="Login" disabled={loading}/>
+                <input className='btn btn-primary' type="submit" value="Sign in" disabled={loading}/>
             </form>
         </motion.div>
     )
