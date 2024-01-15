@@ -195,7 +195,6 @@ export default function Post({data, loading, handleLike, list}) {
 
     return (
         <motion.div 
-        id={postData.id}
         className='post'
         initial={{opacity: 0}}
         animate={{opacity: 1}}

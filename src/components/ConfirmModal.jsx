@@ -1,10 +1,18 @@
 import React from 'react'
+import { motion } from 'framer-motion';
 
 export default function ConfirmModal ({ show, onConfirm, onCancel, message })  {
     if (!show) return null;
 
     return (
-        <div className="confirm-modal">
+        <motion.div 
+        className="confirm-modal"
+        initial={{opacity: 0}}
+        animate={{opacity: 1}}
+        exit={{opacity: 0}}
+        transition={{
+            duration: 0.2
+        }}>
             <div className="confirm-modal__content">
 
                 <p>{message}</p>
@@ -13,6 +21,6 @@ export default function ConfirmModal ({ show, onConfirm, onCancel, message })  {
                     <button className='btn btn-primary' onClick={onConfirm}>Confirm</button>
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 };
