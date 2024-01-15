@@ -13,8 +13,8 @@ import './scss/main.scss'
 import { AnimatePresence } from 'framer-motion';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faMagnifyingGlass, faUser,  faHouse, faRocket, faHeart, faMessage, faSquarePlus, faRightFromBracket, faPenToSquare, faCheck, faImage, faTrash} from '@fortawesome/free-solid-svg-icons'
-library.add(faMagnifyingGlass, faUser, faHouse, faRocket, faHeart, faMessage, faSquarePlus, faRightFromBracket, faPenToSquare, faCheck, faImage, faTrash)
+import { faMagnifyingGlass, faUser,  faHouse, faRocket, faHeart, faMessage, faSquarePlus, faRightFromBracket, faPenToSquare, faCheck, faImage, faTrash, faPaperPlane} from '@fortawesome/free-solid-svg-icons'
+library.add(faMagnifyingGlass, faUser, faHouse, faRocket, faHeart, faMessage, faSquarePlus, faRightFromBracket, faPenToSquare, faCheck, faImage, faTrash, faPaperPlane)
 
 function App() {
     const location = useLocation()

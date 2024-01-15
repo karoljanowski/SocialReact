@@ -7,6 +7,7 @@ import Alert from '../Alert'
 import { toast } from 'react-toastify'
 import { useAuth } from '../../context/AuthProvider'
 import { motion } from 'framer-motion'
+import ConfirmModal from '../ConfirmModal'
 
 export default function Post({data, loading, handleLike, list}) {
     const {id} = useParams()
@@ -14,33 +15,41 @@ export default function Post({data, loading, handleLike, list}) {
     const [loadingPost, setLoadingPost] = useState(true)
     const currentUser = useAuth()
     const navigate = useNavigate()
-    const location = useLocation()
     const [authorIsCurrentUser, setAuthorIsCurrentUser] = useState(false)
+    const [commentText, setCommentText] = useState('')
+    
+    const [likeLoading, setLikeLoading] = useState(false)
+    const [commentLoading, setCommentLoading] = useState(false)
 
-    useEffect(() => {
-        async function fetchPost(){
-            setLoadingPost(true)
-            const {data: fetchedData, error} = await supabase
-            .rpc('get_post_by_id', {p_id: id})
-            
-            if(error){
-                toast.error('Your account has been created')
-                return
-            }
+    const [showModal, setShowModal] = useState(false)
+    const [confirmFunc, setConfirmFunc] = useState(null)
+    
 
-            if(fetchedData) {
+    async function fetchPost(){
+        setLoadingPost(true)
+        const {data: fetchedData, error} = await supabase
+        .rpc('get_post_by_id', {p_id: id})
+        
+        if(error){
+            toast.error('Unknown error')
+            return
+        }
+
+        if(fetchedData) {
                 setPostData({
-                    id: fetchedData[0].id,
+                    id: fetchedData[0].post_id,
                     author: fetchedData[0].username,
                     authorProfilePicture: fetchedData[0].profile_photo,
-                    image: fetchedData[0].image,
-                    description: fetchedData[0].description,
+                    image: fetchedData[0].post_image,
+                    description: fetchedData[0].post_description,
                     likes: fetchedData[0].likers ? fetchedData[0].likers.length : 0,
-                    likedByCurrentUser: fetchedData[0].likers ? fetchedData[0].likers.some(user => user === currentUser.userInfo[0].username) : false
+                    likedByCurrentUser: fetchedData[0].likers ? fetchedData[0].likers.some(user => user === currentUser.userInfo[0].username) : false,
+                    comments: fetchedData[0].comments[0].id ? fetchedData[0].comments : []
                 })
-            }
-            setLoadingPost(false)
         }
+        setLoadingPost(false)
+    }
+    useEffect(() => {
 
         if(list === false && currentUser.userInfo){
             fetchPost()
@@ -61,6 +70,7 @@ export default function Post({data, loading, handleLike, list}) {
     }, [postData])
 
     async function handleLike(){
+        setLikeLoading(true)
         const postIsLiked = postData.likedByCurrentUser === true
 
         if(postIsLiked){
@@ -69,7 +79,12 @@ export default function Post({data, loading, handleLike, list}) {
             .delete()
             .eq('post_id', postData.id)
             .eq('user_id', currentUser.userInfo[0].id)
-            if(error) toast.error('Unknown error')
+
+            if(error) {
+                toast.error('Unknown error') 
+                setLikeLoading(false)
+                return
+            }
             
             setPostData(prev => {
                 return {
@@ -85,7 +100,11 @@ export default function Post({data, loading, handleLike, list}) {
             .from('likes')
             .insert({post_id: postData.id, user_id: currentUser.userInfo[0].id})
 
-            if(error) toast.error('Unknown error')
+            if(error) {
+                toast.error('Unknown error') 
+                setLikeLoading(false)
+                return
+            }
 
             setPostData(prev => {
                 return {
@@ -96,10 +115,12 @@ export default function Post({data, loading, handleLike, list}) {
             })
             
         }
+        setLikeLoading(false)
     }
     async function handleDelete(){
         const {error} = await supabase
         .rpc('delete_post_with_likes', {post_id_to_delete: postData.id})
+        console.log(error)
         
         if(!error){
             toast.success('Post has been deleted')
@@ -111,10 +132,65 @@ export default function Post({data, loading, handleLike, list}) {
         }
 
     }
-    function handleComment(){
+    async function handleComment(){
         if(list){
             navigate(`/posts/${postData.id}`)
+            return
         }
+        setCommentLoading(true)
+        if(commentText.length === 0){
+            toast.error('Your comment is empty')
+            setCommentLoading(false)
+            return
+        }
+        const commentData = {post_id: postData.id, user_id: currentUser.user.id, text: commentText}
+
+        const {error} = await supabase
+        .from('comments')
+        .insert(commentData)
+
+        if(error){
+            toast.error('Unkown error')
+            setCommentLoading(false)
+            return
+        }
+        fetchPost()
+        setCommentText('')
+        toast.success('Your comment has been added')
+        setCommentLoading(false)
+    }
+    function displayDate(date){
+        const dateObject = new Date(date)
+
+        const options = {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        }
+        const formattedDateTime = dateObject.toLocaleString("en-US", options).replace(",", "")
+        return formattedDateTime
+    }
+    const commentsList = postData.comments ? postData.comments.map(comment => {
+        return <div key={comment.id} className="comments__comment">
+            <div className="comments__profile-photo">
+                <img src={comment.profile_photo}/>
+            </div>
+            <div className="comments__details">
+                <span className="comments__username">{comment.username}</span>
+                <p className="comments__text">{comment.text}</p>
+                <span className="comments__date">{displayDate(comment.created_at)}</span>
+            </div>
+        </div>
+    }) : null
+
+    function setModal(func){
+        setConfirmFunc(() => () => func())
+        setShowModal(true)
+    }
+    function handleCancel(){
+        setShowModal(false)
     }
 
     return (
@@ -130,10 +206,16 @@ export default function Post({data, loading, handleLike, list}) {
             {list === false && 
                 <div className='post__header'>
                     <p className="post__header-text">post</p>
-                    {authorIsCurrentUser && <FontAwesomeIcon onClick={handleDelete} className='post__delete' icon="fa-trash"/>}
+                    {authorIsCurrentUser && <FontAwesomeIcon onClick={() => setModal(handleDelete)} className='post__delete' icon="fa-trash"/>}
                 </div>
             }
             <Alert/>
+            <ConfirmModal
+                show={showModal} 
+                onConfirm={confirmFunc} 
+                onCancel={handleCancel} 
+                message="Are you sure?" 
+            />
             <div className="post__content">
 
                 <div className="post__image">
@@ -148,14 +230,20 @@ export default function Post({data, loading, handleLike, list}) {
                     </div>
                     <div className="post__buttons">
                         <div className="post__buttons-content">
-                            <button onClick={handleLike} className={`post__button post__like ${postData.likedByCurrentUser && 'post__liked'}`}><FontAwesomeIcon icon="fa-heart"/> <span>{postData.likes}</span></button>
-                            <button onClick={handleComment} className='post__button post__comment'><FontAwesomeIcon icon="fa-message"/></button>
+                            <button onClick={handleLike} disabled={likeLoading} className={`post__button post__like ${postData.likedByCurrentUser && 'post__liked'}`}><FontAwesomeIcon icon="fa-heart"/> <span>{postData.likes}</span></button>
+                            {list === true && <button onClick={handleComment} className='post__button post__comment'><FontAwesomeIcon icon="fa-message"/></button>}
                         </div>
                     </div>
                 </div>
                 {list === false && 
-                    <div className="post__comments">
-                        comments
+                    <div className="comments">
+                        <div className="comments__add">
+                            <input value={commentText} onChange={(e) => setCommentText(e.target.value)} className='comments__input' placeholder='Add comment' type="text" />
+                            <FontAwesomeIcon disabled={commentLoading} className='comments__submit-btn' icon="fa-paper-plane" onClick={handleComment}/>
+                        </div>
+                        <div className="comments__list">
+                            {commentsList}
+                        </div>
                     </div>
                 }
             </div>
@@ -163,8 +251,3 @@ export default function Post({data, loading, handleLike, list}) {
     )
 }
 
-function Comment({data}){
-    return (
-        <p></p>
-    )
-}

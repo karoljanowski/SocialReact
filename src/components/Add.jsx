@@ -46,7 +46,7 @@ export default function Add() {
             setLoading(false)
             return
         }
-        const {data, error: postError} = await supabase
+        const {error: postError} = await supabase
         .from('posts')
         .insert(
             {

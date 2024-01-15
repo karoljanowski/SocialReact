@@ -1,0 +1,42 @@
+body:has(.confirm-modal) {
+    max-height: 100vh;
+    overflow: hidden;
+}
+
+.confirm-modal {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    background-color: rgba($body-bg, 0.8);
+    z-index: 2;
+    border: 1px solid rgba($body-color, 0.1);
+    border-radius: $border-radius $border-radius 0 0;
+    border-bottom: 0;
+    display: grid;
+    place-content: end stretch;
+
+    & &__content {
+        background-color: $body-bg;
+        border-radius: $border-radius $border-radius 0 0;
+        border: 1px solid rgba($body-color, 0.1);
+        border-bottom: 0;
+        width: 100%;
+        text-align: center;
+        padding: 1rem;
+        font-weight: bold;
+        font-size: 1.25rem;
+    }
+
+    & &__buttons {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        align-items: center;
+    }
+
+    & .btn {
+        padding: 0.5rem 1.5rem;
+    }
+}
