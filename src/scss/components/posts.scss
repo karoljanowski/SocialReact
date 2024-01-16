@@ -36,7 +36,6 @@
 
     & &__content {
         border-radius: 12px;
-        overflow: hidden;
         display: flex;
         flex-direction: column;
         height: 100%;
@@ -179,6 +178,40 @@
             height: 100%;
             object-fit: cover;
         }
+    }
+
+    & &__details {
+        flex: 1;
+    }
+
+    & &__options {
+        color: $primary;
+        font-size: 1.5rem;
+        position: relative;
+    }
+
+    & &__option-list {
+        z-index: 1;
+        position: absolute;
+        right: 0;
+        background-color: $body-bg;
+    }
+
+    & &__option {
+        font-size: 1.125rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-top: 1px solid rgba($body-color, 0.1);
+    }
+
+    & &__option-delete {
+        color: $tertiary;
+    }
+
+    & &__option-edit {
+        color: $secondary;
     }
 
     & &__username {

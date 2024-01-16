@@ -8,6 +8,7 @@ import { toast } from 'react-toastify'
 import { useAuth } from '../../context/AuthProvider'
 import { motion } from 'framer-motion'
 import ConfirmModal from '../ConfirmModal'
+import CommentsList from './Comment'
 
 export default function Post({data, loading, handleLike, list}) {
     const {id} = useParams()
@@ -68,6 +69,9 @@ export default function Post({data, loading, handleLike, list}) {
             setAuthorIsCurrentUser(postData.author === currentUser.userInfo[0].username)
         }
     }, [postData])
+    useEffect(() => {
+        if(typeof confirmFunc == 'function') {setShowModal(true)}
+    }, [confirmFunc])
 
     async function handleLike(){
         setLikeLoading(true)
@@ -130,7 +134,6 @@ export default function Post({data, loading, handleLike, list}) {
         }else{
             toast.error('Something gone wrong')
         }
-
     }
     async function handleComment(){
         if(list){
@@ -159,40 +162,11 @@ export default function Post({data, loading, handleLike, list}) {
         toast.success('Your comment has been added')
         setCommentLoading(false)
     }
-    function displayDate(date){
-        const dateObject = new Date(date)
-
-        const options = {
-            year: "numeric",
-            month: "numeric",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-        }
-        const formattedDateTime = dateObject.toLocaleString("en-US", options).replace(",", "")
-        return formattedDateTime
+    
+    const commentsList = postData.comments ? <CommentsList comments={postData.comments} setConfirmFunc={handleChangeConfirmFunc} user={currentUser.userInfo[0]} author={postData.author} /> : null;
+    function handleChangeConfirmFunc(value){
+        setConfirmFunc(value)
     }
-    const commentsList = postData.comments ? postData.comments.map(comment => {
-        return <div key={comment.id} className="comments__comment">
-            <div className="comments__profile-photo">
-                <img src={comment.profile_photo}/>
-            </div>
-            <div className="comments__details">
-                <span className="comments__username">{comment.username}</span>
-                <p className="comments__text">{comment.text}</p>
-                <span className="comments__date">{displayDate(comment.created_at)}</span>
-            </div>
-        </div>
-    }) : null
-
-    function setModal(func){
-        setConfirmFunc(() => () => func())
-        setShowModal(true)
-    }
-    function handleCancel(){
-        setShowModal(false)
-    }
-
     return (
         <motion.div 
         className='post'
@@ -205,14 +179,14 @@ export default function Post({data, loading, handleLike, list}) {
             {list === false && 
                 <div className='post__header'>
                     <p className="post__header-text">post</p>
-                    {authorIsCurrentUser && <FontAwesomeIcon onClick={() => setModal(handleDelete)} className='post__delete' icon="fa-trash"/>}
+                    {authorIsCurrentUser && <FontAwesomeIcon onClick={() => setConfirmFunc(() => () => func())} className='post__delete' icon="fa-trash"/>}
                 </div>
             }
             <Alert/>
             <ConfirmModal
                 show={showModal} 
                 onConfirm={confirmFunc} 
-                onCancel={handleCancel} 
+                onCancel={() => setShowModal(false)} 
                 message="Are you sure?" 
             />
             <div className="post__content">

@@ -4,8 +4,15 @@ import { motion } from 'framer-motion';
 export default function ConfirmModal ({ show, onConfirm, onCancel, message })  {
     if (!show) return null;
 
+    function opacityClick(e){
+        if(e.target.classList.value === 'confirm-modal'){
+            onCancel()
+        }
+    }
+
     return (
         <motion.div 
+        onClick={opacityClick}
         className="confirm-modal"
         initial={{opacity: 0}}
         animate={{opacity: 1}}
