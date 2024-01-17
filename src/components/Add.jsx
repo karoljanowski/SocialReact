@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import { useAuth } from '../context/AuthProvider'
 import { supabase } from '../helpers/supabaseCilent'
 import { v4 as uuidv4 } from 'uuid';
@@ -7,8 +7,9 @@ import Alert from './Alert';
 import ReactLoading from 'react-loading';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import StandardMotion from './StandardMotion';
 
-export default function Add() {
+const Add = () => {
     const [loading, setLoading] = useState(false)
     const [post, setPost] = useState({    
         file: null,
@@ -33,7 +34,7 @@ export default function Add() {
         }
     };
 
-    async function handleSubmit(e){
+    const handleSubmit = async (e) => {
         setLoading(true)
         e.preventDefault()
         const {data: imageData, error: imageError} = await supabase
@@ -66,14 +67,7 @@ export default function Add() {
         setLoading(false)
     }
     return (
-        <motion.div 
-        className='add'
-        initial={{opacity: 0}}
-        animate={{opacity: 1}}
-        exit={{opacity: 0}}
-        transition={{
-            duration: 0.2
-        }}>
+        <StandardMotion divClass='add'>
             <Alert/>
             <p className='add__header'>Add post</p>
 
@@ -87,6 +81,7 @@ export default function Add() {
                     "Add Post"}
                 </button>
             </form>
-        </motion.div>
+        </StandardMotion>
     )
 }
+export default Add

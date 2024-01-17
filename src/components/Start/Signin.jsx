@@ -4,13 +4,9 @@ import { useAuth } from '../../context/AuthProvider'
 import { motion } from 'framer-motion'
 import {toast} from 'react-toastify'
 import Alert from '../Alert'
+import StandardMotion from '../StandardMotion'
 
-const alertDefault = {
-    message: "",
-    isVisible: false,
-    type: ""
-}
-export default function Signin() {
+const Signin = () => {
     const { login } = useAuth()
     const [loading, setLoading] = useState(false)
     const [user, setUser] = useState({
@@ -19,7 +15,7 @@ export default function Signin() {
     })
     const navigate = useNavigate()
 
-    async function handleLogin(e) {
+    const handleLogin = async (e) => {
         e.preventDefault()
         if(user.email === "" || user.password === ""){
             toast.error('Some of fields are empty');
@@ -54,22 +50,14 @@ export default function Signin() {
         }))
     }
     return (
-        <motion.div
-        
-        className='start__form'
-        exit={{opacity: 0}}
-        animate={{opacity: 1}}
-        initial={{opacity: 0}}
-        transition={{
-            duration: 0.2
-        }}
-        >
+        <StandardMotion divClass={'start__form'}>
             <Alert/>
             <form className='d-flex flex-column' onSubmit={handleLogin}>
                 <input type="text" name="email" placeholder="email" value={user.email} onChange={handleChange}/>
                 <input type="password" name="password" placeholder="password" value={user.password} onChange={handleChange}/>
                 <input className='btn btn-primary' type="submit" value="Sign in" disabled={loading}/>
             </form>
-        </motion.div>
+        </StandardMotion>
     )
 }
+export default Signin

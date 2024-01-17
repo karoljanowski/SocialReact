@@ -3,7 +3,7 @@ import Skeleton from 'react-loading-skeleton'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
 
-export default function ProfilePosts({posts, loading}) {
+const ProfilePosts = ({posts, loading}) => {
     const postList = posts && posts.map(item => {
         return <ProfilePost key={item.id} data={item} />
     })
@@ -23,7 +23,7 @@ export default function ProfilePosts({posts, loading}) {
         </>
     )
 }
-function PostSkeleton(){
+const PostSkeleton = () => {
     return (
         <div className='profile__posts'>
             <Skeleton className='profile__post-skeleton' />
@@ -32,7 +32,7 @@ function PostSkeleton(){
         </div>
     )
 }
-function ProfilePost({data}){
+const ProfilePost = ({data}) => {
     const {id, image} = data
     return (
         <Link to={`/posts/${id}`} className="profile__post">
@@ -40,3 +40,5 @@ function ProfilePost({data}){
         </Link>
     )
 }
+
+export default ProfilePosts

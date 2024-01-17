@@ -1,7 +1,8 @@
 import React from 'react'
 import { motion } from 'framer-motion';
+import StandardMotion from './StandardMotion';
 
-export default function ConfirmModal ({ show, onConfirm, onCancel, message })  {
+const ConfirmModal = ({ show, onConfirm, onCancel, message }) => {
     if (!show) return null;
 
     function opacityClick(e){
@@ -11,23 +12,16 @@ export default function ConfirmModal ({ show, onConfirm, onCancel, message })  {
     }
 
     return (
-        <motion.div 
-        onClick={opacityClick}
-        className="confirm-modal"
-        initial={{opacity: 0}}
-        animate={{opacity: 1}}
-        exit={{opacity: 0}}
-        transition={{
-            duration: 0.2
-        }}>
-            <div className="confirm-modal__content">
-
+        <StandardMotion onClick={opacityClick} divClass="confirm-modal">
+            <div className="confirm-modal__content container">
                 <p>{message}</p>
                 <div className="confirm-modal__buttons">
                     <button className='btn btn-tertiary' onClick={onCancel}>Cancel</button>
                     <button className='btn btn-primary' onClick={onConfirm}>Confirm</button>
                 </div>
             </div>
-        </motion.div>
-    );
-};
+        </StandardMotion>
+    )
+}
+
+export default ConfirmModal

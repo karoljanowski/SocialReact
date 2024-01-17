@@ -66,7 +66,8 @@ export default function Posts() {
         </motion.div>
     )
 }
-function NoPosts(){
+
+const NoPosts = () => {
     return(
         <div className="posts">
             <p className="posts__header">feed</p>

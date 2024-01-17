@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-export default function Menu() {
+const Menu = () => {
     return (
         <div className="menu container">
             <div className="menu__items">
@@ -13,3 +13,4 @@ export default function Menu() {
         </div>
     )
 }
+export default Menu

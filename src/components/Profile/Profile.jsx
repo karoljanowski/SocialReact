@@ -4,30 +4,27 @@ import { useAuth } from '../../context/AuthProvider'
 import { useParams } from 'react-router-dom'
 import { supabase } from '../../helpers/supabaseCilent'
 import { Link } from 'react-router-dom'
-import CountUp from 'react-countup';
-import { v4 as uuidv4 } from 'uuid';
-import ProfilePosts from './ProfilePosts';
 import { toast } from 'react-toastify';
+import ProfilePosts from './ProfilePosts';
+import ProfileInfo from './ProfileInfo'
+import StandardMotion from '../StandardMotion'
 import Alert from '../Alert';
-import Skeleton from 'react-loading-skeleton'
-import { motion } from 'framer-motion'
+import ProfilePicture from './ProfilePicture'
+import TextEdit from '../TextEdit'
+import FollowButton from './FollowButton'
 
-export default function Profile() {
+const Profile = () => {
     const [loading, setLoading] = useState(true)
-    const [loadingEditProfilePicture, setLoadingEditProfilePicture] = useState(false)
-    const [loadingEditDescription, setLoadingEditDescription] = useState(false)
     const currentUser = useAuth()
     const params = useParams()
     const [isCurrentUser, setIsCurrentUser] = useState(false)
     const [userData, setUserData] = useState({})
     const [postsData, setPostsData] = useState([])
-
-    const [isEditingDescription, setIsEditingDescription] = useState(false)
 	const [descriptionValue, setDescriptionValue] = useState('')
     const [isCurrentUserFollowingUser, setIsCurrentUserFollowingUser] = useState(false)
 
     useEffect(() => {
-        async function getUserData(){
+        const getUserData = async () => {
             if(currentUser.userInfo){
                 
                 let userData = {}
@@ -47,12 +44,12 @@ export default function Profile() {
                     id: data[0].profile_id,
                     username: data[0].username,
                     profilePicture: data[0].profile_photo,
-                    description: data[0].description,
                     followers: data[0].followers,
                     following: data[0].following,
                     posts: data[0].posts
                 }
                 setIsCurrentUserFollowingUser(data[0].followers.some(item => item === currentUser.userInfo[0].id))
+                setDescriptionValue(data[0].description)
                 
                 //fetch posts
                 if(userData.id){
@@ -71,7 +68,7 @@ export default function Profile() {
                         }))
                     }
                 }
-                setLoading(false) // false
+                setLoading(false)
                 setUserData(userData)
             }
         }
@@ -79,76 +76,8 @@ export default function Profile() {
         getUserData()
 
     }, [currentUser])
-   
-    async function handleFollow(user, currentUser){
-        const data = {
-            follower_id: currentUser, 
-            followed_id: user
-        }
 
-        if(isCurrentUserFollowingUser){
-            const {error} = await supabase
-            .from('follows')
-            .delete()
-            .eq('follower_id', currentUser)
-            .eq('followed_id', user)
-            
-
-            if(!error){
-                setIsCurrentUserFollowingUser(false)
-            }else{
-                toast.error('Unknown error')
-            }
-        }else{
-            const {error} = await supabase
-            .from('follows')
-            .insert(data)
-
-            if(!error){
-                setIsCurrentUserFollowingUser(true)
-            }else{
-                toast.error('Unknown error')
-            }
-        }
-    }
-    async function handleChangeProfilePicture(e){
-        e.preventDefault()
-        setLoadingEditProfilePicture(true)
-        const {data: imageData, error: imageError} = await supabase
-        .storage
-        .from('UserProfilePicture')
-        .upload(`${userData.id}/${uuidv4()}`, e.target.files[0])
-        if(!imageData || imageError){
-            toast.error("You did't select a photo")
-            return
-        }
-        const { error } = await supabase
-            .from('profile')
-            .update({ profile_photo: `https://zjmwpddflnufpytvgmij.supabase.co/storage/v1/object/public/${imageData.fullPath}` })
-            .eq('id', userData.id)
-        if(!error){
-            toast.success('Success!')
-            setUserData(prev => {
-                return{
-                    ...prev,
-                    profilePicture: URL.createObjectURL(e.target.files[0])
-                }
-              })
-        }else{
-            toast.error('Unknown error')
-        }
-        setLoadingEditProfilePicture(false)
-    }
-    function handleChangeDescription(e){
-		setDescriptionValue(e.target.value)
-	}
-    function handleEditDescription(){
-		setDescriptionValue(userData.description ? userData.description : "")
-
-		setIsEditingDescription(true)
-	}
-    async function handleAcceptDescription(){
-        setLoadingEditDescription(true)
+    const handleAcceptDescription = async () => {
         const { error } = await supabase
             .from('profile')
             .update({ description: descriptionValue })
@@ -161,21 +90,14 @@ export default function Profile() {
                 }
             })
         }else{
-            console.log(error)
+            toast.error('Unknown error')
         }
-        setLoadingEditDescription(false)
-        setIsEditingDescription(false)
     }
-    if(!loading && Object.keys(userData).length === 0) return noUser();
+
+    if(!loading && Object.keys(userData).length === 0) return NoUser();
+
     return (
-        <motion.div
-        className='profile'
-        initial={{opacity: 0}}
-        animate={{opacity: 1}}
-        exit={{opacity: 0}}
-        transition={{
-            duration: 0.2
-        }}>
+        <StandardMotion divClass={'profile'}>
             <Alert/>
             <div className="profile__header">
                 <p className="profile__header-text">profile</p>
@@ -183,78 +105,23 @@ export default function Profile() {
             </div>
 
             <div className="profile__top">
-                <div className="profile__picture">
-                    {loading || loadingEditProfilePicture ? <Skeleton
-                        circle
-                        height="100%"
-                    />
-                    :
-                    isCurrentUser ? 
-                    <>
-                    <label htmlFor="file" className='profile__file-label'>
-                    <FontAwesomeIcon className='profile__picture-edit' icon={'fa-pen-to-square'}></FontAwesomeIcon>
-                        <img src={userData.profilePicture} />
-                    </label>
-                    <input type="file" id='file' accept="image/*" name='file' className='profile__file' onChange={handleChangeProfilePicture}/>
-                    </> : 
-                    <img src={userData.profilePicture} alt="" />}
-                </div>
-                <div className="profile__info">
-                    <p className='profile__username'>{loading ? <Skeleton width="100%"/> : userData.username}</p>
-                    <div className="profile__stats">
-                        <div className="profile__stat">
-                        <span>Posts</span>
-                        {loading ? <Skeleton/> :
-                        <CountUp start={0} end={postsData.length} delay={0}>
-                            {({ countUpRef }) => (
-                            <span ref={countUpRef} />
-                            )}
-                        </CountUp>}
-                        </div>
-                        <div className="profile__stat">
-                        <span>Followers</span>
-                        {loading ? <Skeleton/> :
-                        <CountUp start={0} end={userData.followers && userData.followers.length} delay={0}>
-                        {({ countUpRef }) => (
-                            <span ref={countUpRef} />
-                        )}
-                        </CountUp>}
-                        </div>
-                        <div className="profile__stat">
-                        <span>Following</span>
-                        {loading ? <Skeleton/> : 
-                        <CountUp start={0} end={userData.following && userData.following.length} delay={0}>
-                        {({ countUpRef }) => (
-                            <span ref={countUpRef} />
-                        )}
-                        </CountUp>}
-                        </div>
-                    </div>
-                </div>
+                <ProfilePicture loading={loading} userData={userData} setUserData={setUserData} isCurrentUser={isCurrentUser} />
+                <ProfileInfo loading={loading} userData={userData} postsDataLength={postsData.length}/>
             </div>
-            <div className="profile__description">
-                {loading || loadingEditDescription ? <Skeleton width="100%"/> :
-                isEditingDescription ? 
-                    <>
-                        <input autoFocus className="profile__description-edit" type='text' value={descriptionValue} onChange={handleChangeDescription}></input>
-                        <FontAwesomeIcon onClick={handleAcceptDescription} className='profile__description-icon-edit' icon={'fa-check'}></FontAwesomeIcon>
-                    </> :
-                    <>
-                    {userData.description}
-                    {isCurrentUser && <FontAwesomeIcon onClick={handleEditDescription} className='profile__description-icon-edit' icon="fa-pen-to-square"></FontAwesomeIcon>}
-                    </>
-                }
-            </div>
-            {loading ? <Skeleton width="100&" className='btn-follow-skeleton'/>:
-            !isCurrentUser && 
-            <button className={`btn btn-primary ${isCurrentUserFollowingUser ? 'btn-unfollow' : 'btn-follow'}`} onClick={() => handleFollow(userData.id, currentUser.userInfo[0].id)}>
-                {isCurrentUserFollowingUser ? 'Unfollow' : 'Follow'}
-            </button>}
+
+            <TextEdit loading={loading} editIcon={true} textValue={descriptionValue} setTextValue={setDescriptionValue} isCurrentUser={isCurrentUser} handleAcceptText={handleAcceptDescription} />
+
+            <FollowButton loading={loading} isCurrentUser={isCurrentUser} isCurrentUserFollowingUser={isCurrentUserFollowingUser} currentUser={currentUser}/>
+
             <ProfilePosts posts={postsData} loading={loading}/>
-        </motion.div>
+            
+        </StandardMotion>
     )
 }
-function noUser(){
+
+export default Profile
+
+const NoUser = () => {
     return (
         <div className="profile">
             <div className="profile__header">

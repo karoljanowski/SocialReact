@@ -7,13 +7,13 @@ import Alert from './Alert'
 import Skeleton from 'react-loading-skeleton'
 import { motion } from 'framer-motion'
 
-export default function SearchUser() {
+const SearchUser = () => {
     const [text, setText] = useState('')
     const deb = useDebounce(text, 500)
     const [users, setUsers] = useState([])
     const [loading, setLoading] = useState(false)
     useEffect(() => {
-        async function fetchUsers(){
+        const fetchUsers = async () => {
             if(deb.length > 0){
                 setLoading(true)
                 const {data, error} = await supabase
@@ -73,7 +73,9 @@ export default function SearchUser() {
     )
     
 }
-function UserItem({user}){
+export default SearchUser
+
+const UserItem = ({user}) => {
     return(
         <Link to={`/profile/${user.username}`}>
             <div className="search__user">
@@ -87,7 +89,7 @@ function UserItem({user}){
         </Link>
     )
 }
-function UserSkeleton(){
+const UserSkeleton = () => {
     return (
         <Link>
             <div className="search__user">

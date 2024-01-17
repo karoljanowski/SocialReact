@@ -4,8 +4,9 @@ import { supabase } from '../../helpers/supabaseCilent'
 import { motion } from 'framer-motion'
 import {toast} from 'react-toastify'
 import Alert from '../Alert'
+import StandardMotion from '../StandardMotion'
 
-export default function Signup() {
+const Signup = () => {
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
     const [user, setUser] = useState({
@@ -15,7 +16,7 @@ export default function Signup() {
     })
 
 
-    async function handleSignup(e) {
+    const handleSignup = async (e) => {
         e.preventDefault();
     
         if (!user.email || !user.password || !user.username) {
@@ -61,15 +62,7 @@ export default function Signup() {
         }))
     }
     return (
-        <motion.div 
-        className='start__form'
-        initial={{opacity: 0}}
-        animate={{opacity: 1}}
-        exit={{opacity: 0}}
-        transition={{
-            duration: 0.2
-        }}
-        >
+        <StandardMotion divClass='start__form'>
             <Alert/>
             <form className='d-flex flex-column' onSubmit={e => handleSignup(e)}>
                 <input type="text" name="email" placeholder="email" onChange={handleChange} value={user.email}/>
@@ -77,6 +70,7 @@ export default function Signup() {
                 <input type="password" name="password" placeholder="password" onChange={handleChange} value={user.password}/>
                 <input className="btn btn-primary" type="submit" value="Sign up" disabled={loading}/>
             </form>
-        </motion.div>
+        </StandardMotion>
     )
 }
+export default Signup

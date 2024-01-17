@@ -1,9 +1,8 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom';
-// import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import SvgBackground from '../Start/SvgBg';
 
-export default function Start() {
+const Start = () => {
     const navigate = useNavigate()
     const location = useLocation()
 
@@ -13,7 +12,7 @@ export default function Start() {
         }
     }, [])
 
-    function setActive(path){
+    const setActive = (path) => {
         return path === location.pathname ? 'start__active' : ''
     }
 
@@ -48,6 +47,5 @@ export default function Start() {
     )
 }
 
-
-
+export default Start
 
