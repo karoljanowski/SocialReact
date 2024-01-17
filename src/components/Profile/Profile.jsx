@@ -116,7 +116,7 @@ export default function Profile() {
         setLoadingEditProfilePicture(true)
         const {data: imageData, error: imageError} = await supabase
         .storage
-        .from('PostPhotos')
+        .from('UserProfilePicture')
         .upload(`${userData.id}/${uuidv4()}`, e.target.files[0])
         if(!imageData || imageError){
             toast.error("You did't select a photo")

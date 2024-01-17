@@ -100,12 +100,15 @@
 
     & &__description {
         margin: 1rem 0;
+        word-break: break-all;
     }
 
     & &__description-edit {
         border: 0;
         border-bottom: 1px solid;
         border-radius: 0;
+        padding: 0;
+        width: 80%
     }
 
     & &__description-icon-edit {

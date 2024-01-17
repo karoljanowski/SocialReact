@@ -69,9 +69,6 @@ export default function Post({data, loading, handleLike, list}) {
             setAuthorIsCurrentUser(postData.author === currentUser.userInfo[0].username)
         }
     }, [postData])
-    useEffect(() => {
-        if(typeof confirmFunc == 'function') {setShowModal(true)}
-    }, [confirmFunc])
 
     async function handleLike(){
         setLikeLoading(true)
@@ -163,7 +160,7 @@ export default function Post({data, loading, handleLike, list}) {
         setCommentLoading(false)
     }
     
-    const commentsList = postData.comments ? <CommentsList comments={postData.comments} setConfirmFunc={handleChangeConfirmFunc} user={currentUser.userInfo[0]} author={postData.author} /> : null;
+    const commentsList = postData.comments ? <CommentsList comments={postData.comments} fetchData={fetchPost} user={currentUser.userInfo[0]} author={postData.author} /> : null;
     function handleChangeConfirmFunc(value){
         setConfirmFunc(value)
     }
@@ -179,13 +176,13 @@ export default function Post({data, loading, handleLike, list}) {
             {list === false && 
                 <div className='post__header'>
                     <p className="post__header-text">post</p>
-                    {authorIsCurrentUser && <FontAwesomeIcon onClick={() => setConfirmFunc(() => () => func())} className='post__delete' icon="fa-trash"/>}
+                    {authorIsCurrentUser && <FontAwesomeIcon onClick={() => setShowModal(true)} className='post__delete' icon="fa-trash"/>}
                 </div>
             }
             <Alert/>
             <ConfirmModal
                 show={showModal} 
-                onConfirm={confirmFunc} 
+                onConfirm={handleDelete} 
                 onCancel={() => setShowModal(false)} 
                 message="Are you sure?" 
             />

@@ -1,27 +1,20 @@
-body:has(.confirm-modal) {
-    max-height: 100vh;
-    overflow: hidden;
-}
-
 .confirm-modal {
-    position: absolute;
-    bottom: 0;
+    position: fixed;
+    bottom: 60px;
     left: 0;
     right: 0;
     top: 0;
     background-color: rgba($body-bg, 0.8);
     z-index: 2;
-    border: 1px solid rgba($body-color, 0.1);
-    border-radius: $border-radius $border-radius 0 0;
     border-bottom: 0;
     display: grid;
-    place-content: end stretch;
+    place-content: center stretch;
+
 
     & &__content {
         background-color: $body-bg;
-        border-radius: $border-radius $border-radius 0 0;
+        border-radius: $border-radius;
         border: 1px solid rgba($body-color, 0.1);
-        border-bottom: 0;
         width: 100%;
         text-align: center;
         padding: 1rem;
