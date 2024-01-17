@@ -22,6 +22,10 @@ export default function Signup() {
             toast.error('Some of fields are empty');
             return; 
         }
+        if(user.username.includes(' ')){
+            toast.error("Username can't includes whitespaces");
+            return; 
+        }
     
         try {
             setLoading(true);
