@@ -11,7 +11,7 @@ const CommentsList = ({ comments, author, user, fetchData }) => {
     return (
       <StandardMotion>
         {comments.map(comment => (
-          <Comment key={comment.id} comment={comment} author={author} user={user} fetchData={fetchData} />
+             <Comment key={comment.id} comment={comment} author={author} user={user} fetchData={fetchData} />
         ))}
       </StandardMotion>
     );

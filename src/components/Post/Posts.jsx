@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Alert from '../Alert';
 import Post from './Post'
 import StandardMotion from '../StandardMotion';
+import { toast } from 'react-toastify';
 
 const Posts = () => {
     const [postsData, setPostsData] = useState([])
@@ -17,7 +18,7 @@ const Posts = () => {
             const {data, error} = await supabase
             .rpc('get_followed_posts', {current_profile_id: currentUser.userInfo[0].id})
 
-            if(error) console.log(error)
+            if(error) toast.error('Uknown error')
 
             if(data){
                 setPostsData(data.map(post => {

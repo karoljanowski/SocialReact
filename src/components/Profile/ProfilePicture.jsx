@@ -16,8 +16,6 @@ const ProfilePicture = ({loading, userData, setUserData, isCurrentUser}) => {
         .from('UserProfilePicture')
         .upload(`${userData.id}/${uuidv4()}`, e.target.files[0])
 
-        console.log(imageError)
-
         if(!imageData || imageError){
             toast.error("You did't select a photo")
             return

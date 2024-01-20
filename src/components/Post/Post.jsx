@@ -35,16 +35,16 @@ const Post = ({data, loading, list}) => {
         }
 
         if(fetchedData) {
-                setPostData({
-                    id: fetchedData[0].post_id,
-                    author: fetchedData[0].username,
-                    authorProfilePicture: fetchedData[0].profile_photo,
-                    image: fetchedData[0].post_image,
-                    description: fetchedData[0].post_description,
-                    likes: fetchedData[0].likers ? fetchedData[0].likers.length : 0,
-                    likedByCurrentUser: fetchedData[0].likers ? fetchedData[0].likers.some(user => user === currentUser.userInfo[0].username) : false,
-                    comments: fetchedData[0].comments[0].id ? fetchedData[0].comments : []
-                })
+            setPostData({
+                id: fetchedData[0].post_id,
+                author: fetchedData[0].username,
+                authorProfilePicture: fetchedData[0].profile_photo,
+                image: fetchedData[0].post_image,
+                description: fetchedData[0].post_description,
+                likes: fetchedData[0].likers ? fetchedData[0].likers.length : 0,
+                likedByCurrentUser: fetchedData[0].likers ? fetchedData[0].likers.some(user => user === currentUser.userInfo[0].username) : false,
+                comments: fetchedData[0].comments[0].id ? fetchedData[0].comments : []
+            })
         }
         setLoadingPost(false)
     }
@@ -119,7 +119,6 @@ const Post = ({data, loading, list}) => {
     const handleDelete = async () => {
         const {error} = await supabase
         .rpc('delete_post_with_likes', {post_id_to_delete: postData.id})
-        console.log(error)
         
         if(!error){
             toast.success('Post has been deleted')
@@ -157,7 +156,6 @@ const Post = ({data, loading, list}) => {
         toast.success('Your comment has been added')
         setCommentLoading(false)
     }
-    
     const commentsList = postData.comments ? <CommentsList comments={postData.comments} fetchData={fetchPost} user={currentUser.userInfo[0]} author={postData.author} /> : null;
 
     return (
