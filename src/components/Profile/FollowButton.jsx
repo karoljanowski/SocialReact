@@ -1,7 +1,8 @@
 import React from 'react'
 import Skeleton from 'react-loading-skeleton'
+import { supabase } from '../../helpers/supabaseCilent'
 
-const FollowButton = ({loading, isCurrentUser, isCurrentUserFollowingUser, currentUser}) => {
+const FollowButton = ({loading, isCurrentUser, isCurrentUserFollowingUser, currentUser, userData, setIsCurrentUserFollowingUser}) => {
     const handleFollow = async (user, currentUser) => {
         const data = {
             follower_id: currentUser, 

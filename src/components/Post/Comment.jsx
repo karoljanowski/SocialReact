@@ -1,52 +1,46 @@
 import React, {useEffect, useRef, useState} from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion } from "framer-motion";
-import ConfirmModal from "../ConfirmModal";
 import { supabase } from "../../helpers/supabaseCilent";
 import { toast } from "react-toastify";
+import ConfirmModal from "../ConfirmModal";
 import Skeleton from "react-loading-skeleton";
+import StandardMotion from "../StandardMotion";
 
-export default function CommentsList({ comments, author, user, fetchData }){
+const CommentsList = ({ comments, author, user, fetchData }) => {
     return (
-      <motion.div
-      initial={{opacity: 0}}
-      animate={{opacity: 1}}
-      exit={{opacity: 0}}
-      transition={{
-          duration: 0.2
-      }}>
+      <StandardMotion>
         {comments.map(comment => (
           <Comment key={comment.id} comment={comment} author={author} user={user} fetchData={fetchData} />
         ))}
-      </motion.div>
+      </StandardMotion>
     );
   };
 
 function Comment({comment, author, user, fetchData}){
     const [options, setOptions] = useState(false)
     const [showModal, setShowModal] = useState(false)
-    const [loadingEditComment, setLoadingEditComment] = useState(false)
     const [isEditingComment, setIsEditComment] = useState(false)
     const [commentValue, setCommentValue] = useState('')
     const owner = author === user.username || user.username === comment.username
     const ref = useRef()
 
     useEffect(() => {
-        function handleClickOutside(){
+        const handleClickOutside = () => {
+
             if (ref.current && !ref.current.contains(event.target)) {
                 setOptions(false)
             }
         }
-
         document.addEventListener('click', handleClickOutside);
 
         return () => {
             document.removeEventListener('click', handleClickOutside);
         }
-    
+
     }, [])
 
-    function displayDate(date){
+    const displayDate = (date) => {
         const dateObject = new Date(date)
         const options = {
             year: "numeric",
@@ -58,10 +52,10 @@ function Comment({comment, author, user, fetchData}){
         const formattedDateTime = dateObject.toLocaleString("en-US", options).replace(",", "")
         return formattedDateTime
     }
-    function handleOptionClick(){
+    const handleOptionClick = () => {
         setOptions(prev => !prev)
     }
-    async function handleDeleteComment(){
+    const handleDeleteComment = async () => {
         const {error} = await supabase
         .from('comments')
         .delete()
@@ -76,13 +70,13 @@ function Comment({comment, author, user, fetchData}){
             toast.error('Unknown error')
         }
     }
-    function handleEditComment(){
+    const handleEditComment = () => {
         setIsEditComment(true)
         setOptions(false)
         setCommentValue(comment.text)
     }
 
-    async function handleAcceptComment(){
+    const handleAcceptComment = async () => {
         const {error} = await supabase
         .from('comments')
         .update({text: commentValue})
@@ -106,8 +100,7 @@ function Comment({comment, author, user, fetchData}){
                 <span className="comments__username">{comment.username}</span>
                 
                 <p className="comments__text">
-                    {loadingEditComment ? <Skeleton width="100%"/> :
-                    isEditingComment ? 
+                    {isEditingComment ? 
                         <>
                             <input autoFocus className="comments__text-edit" type='text' value={commentValue} onChange={(e) => setCommentValue(e.target.value)}></input>
                             <FontAwesomeIcon onClick={handleAcceptComment} className='comments__text-edit-icon' icon={'fa-check'}></FontAwesomeIcon>
@@ -123,17 +116,10 @@ function Comment({comment, author, user, fetchData}){
             {(owner && !isEditingComment) && <div ref={ref} className="comments__options">
                 <FontAwesomeIcon onClick={handleOptionClick} icon='fa-ellipsis' />
                 {options &&
-                <motion.div
-                initial={{opacity: 0}}
-                animate={{opacity: 1}}
-                exit={{opacity: 0}}
-                transition={{
-                    duration: 0.2
-                }}
-                className="comments__option-list">
+                <StandardMotion divClass="comments__option-list">
                     <div onClick={() => setShowModal(true)} className="comments__option comments__option-delete"><FontAwesomeIcon icon='fa-trash'/>delete</div>
                     <div onClick={handleEditComment} className="comments__option comments__option-edit"><FontAwesomeIcon icon='fa-pen-to-square'/>edit</div>
-                </motion.div>
+                </StandardMotion>
                 }
             </div>}
             <ConfirmModal
@@ -145,3 +131,5 @@ function Comment({comment, author, user, fetchData}){
         </div>
     )
 }
+
+export default CommentsList

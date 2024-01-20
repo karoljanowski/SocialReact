@@ -111,7 +111,7 @@ const Profile = () => {
 
             <TextEdit loading={loading} editIcon={true} textValue={descriptionValue} setTextValue={setDescriptionValue} isCurrentUser={isCurrentUser} handleAcceptText={handleAcceptDescription} />
 
-            <FollowButton loading={loading} isCurrentUser={isCurrentUser} isCurrentUserFollowingUser={isCurrentUserFollowingUser} currentUser={currentUser}/>
+            <FollowButton loading={loading} isCurrentUser={isCurrentUser} isCurrentUserFollowingUser={isCurrentUserFollowingUser} currentUser={currentUser} userData={userData} setIsCurrentUserFollowingUser={setIsCurrentUserFollowingUser}/>
 
             <ProfilePosts posts={postsData} loading={loading}/>
             

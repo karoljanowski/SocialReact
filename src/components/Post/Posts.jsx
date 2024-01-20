@@ -1,20 +1,18 @@
 import React, {useState, useEffect} from 'react'
-import Post from './Post'
 import { useAuth } from '../../context/AuthProvider';
 import { supabase } from '../../helpers/supabaseCilent';
-import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 import Alert from '../Alert';
-import { motion } from 'framer-motion';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import Post from './Post'
+import StandardMotion from '../StandardMotion';
 
-export default function Posts() {
+const Posts = () => {
     const [postsData, setPostsData] = useState([])
     const currentUser = useAuth()
     const [loading, setLoading] = useState(true)
-    const location = useLocation()
 
     useEffect(() => {
-        async function fetchPosts(){
+        const fetchPosts = async () => {
             setLoading(true)
             const {data, error} = await supabase
             .rpc('get_followed_posts', {current_profile_id: currentUser.userInfo[0].id})
@@ -48,14 +46,7 @@ export default function Posts() {
 
     if(!loading && postsData.length === 0) return NoPosts();
     return (
-        <motion.div 
-        className='posts'
-        initial={{opacity: 0}}
-        animate={{opacity: 1}}
-        exit={{opacity: 0}}
-        transition={{
-            duration: 0.2
-        }}>
+        <StandardMotion divClass='posts'>
             <Alert/>
             <p className="posts__header">feed</p>
             <div className="posts__content">
@@ -63,7 +54,7 @@ export default function Posts() {
                     {!loading ? postsList : <Post loading={loading} data={{}} />}
                 </div>
             </div>
-        </motion.div>
+        </StandardMotion>
     )
 }
 
@@ -78,3 +69,5 @@ const NoPosts = () => {
         </div>
     )
 }
+
+export default Posts

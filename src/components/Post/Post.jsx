@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Skeleton from 'react-loading-skeleton'
-import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { supabase } from '../../helpers/supabaseCilent'
 import Alert from '../Alert'
 import { toast } from 'react-toastify'
@@ -10,7 +10,7 @@ import { motion } from 'framer-motion'
 import ConfirmModal from '../ConfirmModal'
 import CommentsList from './Comment'
 
-export default function Post({data, loading, handleLike, list}) {
+const Post = ({data, loading, list}) => {
     const {id} = useParams()
     const [postData, setPostData] = useState({})
     const [loadingPost, setLoadingPost] = useState(true)
@@ -23,10 +23,8 @@ export default function Post({data, loading, handleLike, list}) {
     const [commentLoading, setCommentLoading] = useState(false)
 
     const [showModal, setShowModal] = useState(false)
-    const [confirmFunc, setConfirmFunc] = useState(null)
-    
 
-    async function fetchPost(){
+    const fetchPost = async () => {
         setLoadingPost(true)
         const {data: fetchedData, error} = await supabase
         .rpc('get_post_by_id', {p_id: id})
@@ -70,7 +68,7 @@ export default function Post({data, loading, handleLike, list}) {
         }
     }, [postData])
 
-    async function handleLike(){
+    const handleLike = async () => {
         setLikeLoading(true)
         const postIsLiked = postData.likedByCurrentUser === true
 
@@ -118,7 +116,7 @@ export default function Post({data, loading, handleLike, list}) {
         }
         setLikeLoading(false)
     }
-    async function handleDelete(){
+    const handleDelete = async () => {
         const {error} = await supabase
         .rpc('delete_post_with_likes', {post_id_to_delete: postData.id})
         console.log(error)
@@ -132,7 +130,7 @@ export default function Post({data, loading, handleLike, list}) {
             toast.error('Something gone wrong')
         }
     }
-    async function handleComment(){
+    const handleComment = async () => {
         if(list){
             navigate(`/posts/${postData.id}`)
             return
@@ -161,9 +159,7 @@ export default function Post({data, loading, handleLike, list}) {
     }
     
     const commentsList = postData.comments ? <CommentsList comments={postData.comments} fetchData={fetchPost} user={currentUser.userInfo[0]} author={postData.author} /> : null;
-    function handleChangeConfirmFunc(value){
-        setConfirmFunc(value)
-    }
+
     return (
         <motion.div 
         className='post'
@@ -221,3 +217,4 @@ export default function Post({data, loading, handleLike, list}) {
     )
 }
 
+export default Post
